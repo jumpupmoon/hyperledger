@@ -1,0 +1,26 @@
+OrdererOrgs:
+  - Name: Orderer
+    Domain: example.com
+    Specs:
+      - Hostname: orderer
+PeerOrgs:
+  - Name: Org1
+    Domain: org1.example.com
+    Template:
+      Count: 1
+    Users:
+      Count: 1
+
+  - Name: Org2 # 추가
+    Domain: org2.example.com
+    Template:
+      Count: 1
+    Users:
+      Count: 1
+
+  - Name: Org3 #추가
+    Domain: org3.example.com
+    Template:
+      Count: 1
+    Users:
+      Count: 1
