@@ -1,40 +1,96 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <!-- 부트스트랩 -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <!-- 제이쿼리 -->
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+    <!-- ajax -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 </head>
 
 <body>
     <div class="container">
         <h2>Teamate Simple Page</h2>
 
-        <form action="#">
+        <div>
             <label for="fname">mate name:</label><br>
-            <input type="text" id="name" name="name" value="John"><br><br>
-            <input type="button" id="add-btn" class="btn btn-primary" value="Add User">
-        </form>
+            <input type="text" id="add-name" name="name" value="John"><br><br>
+            <button id="add-btn" class="btn btn-primary">추가</button>
+        </div>
         
         <div id="add-result">&nbsp;</div>
 
-        <form action="#">
+        <div>
             <label for="fname">mate name:</label><br>
             <input type="text" id="rating-name" name="name" value="John"><br><br>
             <label for="fname">project name:</label><br>
             <input type="text" id="rating-project" name="project" value="John"><br><br>
             <label for="fname">project rating:</label><br>
             <input type="text" id="rating" name="rating" value="John"><br><br>
-            <input type="button" id="rating-btn" class="btn btn-primary" value="Add Rating">
-        </form> 
+            <button id="rating-btn" class="btn btn-primary">Add Rating</button>
+        </div> 
         
             <div id="rating-result">&nbsp;</div>
 
-        <form action="#">
+        <div>
             <label for="fname">mate name:</label><br>
             <input type="text" id="read-name" name="name" value="John"><br><br>
-            <input type="button" id="add-btn" class="btn btn-secondary" value="Read User">
-        </form>
+            <button id="read-btn" class="btn btn-secondary">Read User</button>
+        </div>
         
-        <div id="read-result">&nbsp;</div>
+        <div>
+            <table class="table table-striped">
+                <tbody id="read-result"></tbody>
+            </table>
+        </div>
     </div>
 </body>
+
+<script>
+    // 사용자 추가
+    $('#add-btn').click(() => {
+        const name = $('#add-name').val();
+
+        $.post('/user', {name}, (data, status) => {
+            if(status == 'success') {
+                $('#add-result').show();
+                $('#add-result').html(`<div class="alert alert-success">${data}</div>`);
+                $('#add-result').fadeOut(4000);
+            }
+        })
+    });
+
+    // 프로젝트 및 점수 추가
+    $('#rating-btn').click(() => {
+        const name = $('#rating-name').val();
+        const project = $('#rating-project').val();
+        const rating = $('#rating').val();
+
+        $.post('/rating', {name, project, rating}, (data, status) => {
+            if(status == 'success') {
+                $('#rating-result').show();
+                $('#rating-result').html(`<div class="alert alert-success">${data}</div>`);
+                $('#rating-result').fadeOut(4000);
+            }
+        })
+    })
+
+    // 사용자 조회
+    $('#read-btn').click(() => {
+        const name = $('#read-name').val();
+        $('#read-result').empty();
+
+        $.get(`/user/${name}`, (data, status) => {
+            if(status == 'success') {
+                $('#read-result').append(`<tr><th>평균</th><td>${data.average}</td></tr>`);
+                for(let point of data.rates) {
+                    $('#read-result').append(`<tr><th>${point.projecttitle}</th><td>${point.score}</td></tr>`);
+                }
+            } else {
+                $('#read-result').empty();
+            }
+        })
+    })
+</script>
 </html>
